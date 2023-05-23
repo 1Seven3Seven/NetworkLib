@@ -1,8 +1,9 @@
 import queue
-import select
 import socket
 import threading
 from typing import Union, List, Tuple
+
+import select
 
 from NetworkLib.Utils import get_local_ip
 
