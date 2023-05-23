@@ -2,6 +2,7 @@ import queue
 import select
 import socket
 import threading
+from typing import Union
 
 from NetworkLib.Utils import get_local_ip
 
@@ -26,7 +27,7 @@ class Messages:
         self._socket.bind((self.ip, self.port))
 
         # Where we receive and store our messages
-        self._receive_messages_thread: threading.Thread = None
+        self._receive_messages_thread: Union[threading.Thread, None] = None
         """The thread responsible for receiving and processing incoming messages."""
         self._received_messages: queue.Queue = queue.Queue()
         """A queue to store the received messages."""
