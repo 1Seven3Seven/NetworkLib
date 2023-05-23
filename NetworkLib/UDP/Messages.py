@@ -3,7 +3,7 @@ import select
 import socket
 import threading
 
-from Utils import get_local_ip
+from NetworkLib.Utils import get_local_ip
 
 
 class Messages:
