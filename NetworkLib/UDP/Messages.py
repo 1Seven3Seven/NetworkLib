@@ -154,3 +154,13 @@ class Messages:
             raise RuntimeError("Please call stop_listening_for_messages before closing the socket.")
 
         self._socket.close()
+
+    def shutdown(self) -> None:
+        """
+        Stops listening for messages then closes the socket.
+
+        Class instance is effectively useless after this is called and all messages have been received.
+        """
+
+        self.stop_listening_for_messages()
+        self.close_socket()
