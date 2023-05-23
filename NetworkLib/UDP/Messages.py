@@ -100,3 +100,20 @@ class Messages:
         while not self._received_messages.empty():
             messages.append(self._received_messages.get())
         return messages
+
+    def send_message(self, message: str, ip: str, port: int = None) -> None:
+        """
+        Sends a message to the specified IP address and port.
+
+        :param message: The message to be sent as a string.
+        :param ip: The IP address of the destination.
+        :param port: The port number of the destination. If not provided, the default port number of the `Messages`
+        instance is used.
+        """
+
+        self._socket.sendto(
+            message.encode("utf-8"),
+            (
+                ip,
+                self.port if port is None else port)
+        )
