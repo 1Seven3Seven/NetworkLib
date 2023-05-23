@@ -89,6 +89,7 @@ class Messages:
     def get_messages(self) -> list:
         """
         Retrieves the list of received messages.
+
         :return: A list of received messages. Each message is represented as a tuple containing the message content and
         the address from which it was received. If no messages have been received, an empty list is returned.
         """
