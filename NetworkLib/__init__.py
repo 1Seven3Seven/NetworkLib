@@ -1,2 +1,2 @@
-import UDP
-import Utils
+from . import UDP
+from . import Utils
