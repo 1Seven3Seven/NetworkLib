@@ -118,3 +118,23 @@ class Messages:
                 ip,
                 self.port if port is None else port)
         )
+
+    def stop_listening_for_messages(self) -> None:
+        """
+        Stops listening for incoming messages.
+
+        Blocks until all incoming messages have been processed.
+
+        `listen_for_messages` needs to be run again to start listening again.
+        """
+
+        # If the thread exists
+        if self._receive_messages_thread is not None:
+            # Set the stop event
+            self._stop_event.set()
+
+            # Wait for the thread to finish
+            self._receive_messages_thread.join()
+
+            # Remove the thread as it can not be started again
+            self._receive_messages_thread = None
