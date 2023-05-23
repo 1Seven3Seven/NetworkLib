@@ -49,6 +49,7 @@ def main():
 
     # We are finished
     udp.shutdown()
+    print("All done")
 
 
 if __name__ == "__main__":
