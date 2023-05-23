@@ -2,7 +2,7 @@ import queue
 import select
 import socket
 import threading
-from typing import Union
+from typing import Union, List
 
 from NetworkLib.Utils import get_local_ip
 
@@ -89,7 +89,7 @@ class Messages:
             )
             self._receive_messages_thread.start()
 
-    def get_messages(self) -> list:
+    def get_messages(self) -> List[str]:
         """
         Retrieves the list of received messages.
 
