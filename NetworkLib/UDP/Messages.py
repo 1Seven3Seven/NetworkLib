@@ -72,6 +72,8 @@ class Messages:
         """
         Starts listening for incoming messages on the specified port.
 
+        Does not need to be run to send messages.
+
         If the receiving messages thread is not already running, this method starts it in a separate thread.
         The incoming messages are received and processed by the internal `_receive_messages` method.
         """
