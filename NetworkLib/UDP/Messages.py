@@ -42,14 +42,14 @@ class Messages:
         """The maximum time in seconds to wait for incoming messages."""
 
     @property
-    def thread_stopped(self) -> bool:
+    def receiving_messages(self) -> bool:
         """
-        Returns a flag indicating if the _receive_messages_thread has stopped.
+        Returns a bool indicating if the _receive_messages_thread has stopped.
 
-        :return: True if the _receive_messages_thread has stopped, False otherwise.
+        :return: True if the class instance is receiving messages, False otherwise.
         """
 
-        return not self._receive_messages_thread.is_alive()
+        return self._receive_messages_thread.is_alive()
 
     def _receive_messages(self, stop_event: threading.Event) -> None:
         """
