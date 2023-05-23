@@ -75,7 +75,7 @@ class Messages:
         Does not need to be run to send messages.
 
         If the receiving messages thread is not already running, this method starts it in a separate thread.
-        The incoming messages are received and processed by the internal `_receive_messages` method.
+        If the receiving messages thread is running, this method does nothing.
         """
 
         # If we are not already listening
