@@ -42,7 +42,7 @@ def main():
         if choice == "2":
             messages = udp.get_messages()
             if messages:
-                for message, _ in udp.get_messages():
+                for message, _ in messages:
                     print(f"Received: {message}")
             else:
                 print("No messages received")
