@@ -67,3 +67,21 @@ class Messages:
                 message_bytes, address = self._socket.recvfrom(self.port)
                 message = message_bytes.decode("utf-8")
                 self._received_messages.put((message, address))
+
+    def listen_for_messages(self) -> None:
+        """
+        Starts listening for incoming messages on the specified port.
+
+        If the receiving messages thread is not already running, this method starts it in a separate thread.
+        The incoming messages are received and processed by the internal `_receive_messages` method.
+        """
+
+        # If we are not already listening
+        if self._receive_messages_thread is None:
+            # Start listening
+            self._receive_messages_thread = threading.Thread(
+                target=self._receive_messages,
+                args=(self._stop_event,),
+                name=f"NetworkLib.UDP.Messages listening on port {self.port}"
+            )
+            self._receive_messages_thread.start()
