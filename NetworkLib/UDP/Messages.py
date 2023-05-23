@@ -138,3 +138,19 @@ class Messages:
 
             # Remove the thread as it can not be started again
             self._receive_messages_thread = None
+
+    def close_socket(self) -> None:
+        """
+        Closes the socket connection.
+
+        Please call `stop_listening_for_messages` before calling this.
+
+        Class instance is effectively useless after this is called and all messages have been received.
+
+        :raises RuntimeError: If `stop_listening_for_messages` has not been called before closing the socket.
+        """
+
+        if self._receive_messages_thread is not None:
+            raise RuntimeError("Please call stop_listening_for_messages before closing the socket.")
+
+        self._socket.close()
