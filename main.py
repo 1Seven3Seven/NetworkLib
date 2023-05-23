@@ -20,11 +20,13 @@ def main():
 
     # Ask for either sending or receiving
     while True:
+        print("-" * 20)
         # Get our choice
         print("1 to send message\n2 to receive messages\n0 to exit")
         choice = input("> ")
         while choice not in ["0", "1", "2"]:
             choice = input("> ")
+        print("-" * 20)
 
         # Exiting
         if choice == "0":
