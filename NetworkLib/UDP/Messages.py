@@ -85,3 +85,15 @@ class Messages:
                 name=f"NetworkLib.UDP.Messages listening on port {self.port}"
             )
             self._receive_messages_thread.start()
+
+    def get_messages(self) -> list:
+        """
+        Retrieves the list of received messages.
+        :return: A list of received messages. Each message is represented as a tuple containing the message content and
+        the address from which it was received. If no messages have been received, an empty list is returned.
+        """
+
+        messages = []
+        while not self._received_messages.empty():
+            messages.append(self._received_messages.get())
+        return messages
