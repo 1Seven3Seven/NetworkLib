@@ -44,3 +44,13 @@ class Server:
         # How long our thread should wait for messages
         self._receive_messages_timeout = receive_messages_timeout
         """The maximum time in seconds to wait for incoming messages."""
+
+    @property
+    def receiving_messages(self) -> bool:
+        """
+        Returns a bool indicating if the _receive_messages_thread has stopped.
+
+        :return: True if the class instance is receiving messages, False otherwise.
+        """
+
+        return self._receive_client_messages_thread.is_alive()
