@@ -63,7 +63,8 @@ class Server:
     @property
     def receiving_messages(self) -> bool:
         """
-        Returns a bool indicating if the _receive_messages_thread has stopped.
+        Returns a bool indicating if the class instance is receiving client messages.
+        If the `_receive_messages_thread` thread is running.
 
         :return: True if the class instance is receiving messages, False otherwise.
         """
