@@ -86,7 +86,7 @@ class Messages:
             self._receive_messages_thread = threading.Thread(
                 target=self._receive_messages,
                 args=(self._stop_event,),
-                name=f"NetworkLib.UDP.Messages listening on port {self.port}"
+                name=f"NetworkLib.UDP.Messages._receive_messages on port {self.port}"
             )
             self._receive_messages_thread.start()
 
