@@ -1,7 +1,8 @@
 import socket
+from ipaddress import IPv4Address
 
 
-def get_local_ip() -> str:
+def get_local_ip() -> IPv4Address:
     """
     This function attempts to obtain the local IP address of the machine by creating a temporary socket and connecting
     it to a known external IP address and port.
@@ -24,7 +25,7 @@ def get_local_ip() -> str:
         # Close our socket
         temp_socket.close()
         # Done
-        return local_ip_address
+        return IPv4Address(local_ip_address)
     except socket.error:
         # Fallback: try an alternative method to retrieve the local IP address
-        return socket.gethostbyname(socket.gethostname())
+        return IPv4Address(socket.gethostbyname(socket.gethostname()))
