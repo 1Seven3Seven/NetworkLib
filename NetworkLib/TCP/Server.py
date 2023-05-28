@@ -61,7 +61,7 @@ class Server:
         """The number of bytes the message length is encoded to and prepended as"""
 
     @property
-    def receiving_client_requests(self) -> bool:
+    def receiving_client_connections(self) -> bool:
         """
         Returns a bool indicating if the class instance is receiving any client requests.
         If the `_receive_client_requests_thread` thread is running.
