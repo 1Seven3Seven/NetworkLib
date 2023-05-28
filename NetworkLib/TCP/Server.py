@@ -11,7 +11,7 @@ from NetworkLib.Utils import get_local_ip
 
 class Server:
     def __init__(self, port: int = 1024, ip: str = None, receive_messages_timeout: float = 0.1,
-                 prepend_bytes_size: int = 4):
+                 prepend_bytes_size: int = 4, client_connection_backlog: int = 5):
         """
         :param port: The port number to bind the socket to.
         :param ip: The IP address to bind the socket to. If not provided, the local IP address is used.
@@ -20,6 +20,7 @@ class Server:
         This value determines the maximum message length that can be handled.
         For example, if `prepend_bytes_size` is set to 4, the maximum message length is 2^32 - 1.
         This is not enforced but will cause problems if not taken into consideration
+        :param client_connection_backlog: The maximum number of pending connections to the server socket.
         """
 
         self.port: int = port
@@ -52,13 +53,14 @@ class Server:
         self._receive_client_messages_stop_event: threading.Event = threading.Event()
         """An event used to signal each thread handling client messages to stop."""
 
-        # How long our thread should wait for messages
         self._receive_messages_timeout = receive_messages_timeout
         """The maximum time in seconds to wait for incoming messages."""
 
-        # The amount of bytes to use when preparing messages
         self.prepend_bytes_size = prepend_bytes_size
         """The number of bytes the message length is encoded to and prepended as"""
+
+        self.client_connection_backlog = client_connection_backlog
+        """The maximum number of pending connections to the server socket."""
 
     @property
     def receiving_client_connections(self) -> bool:
@@ -81,6 +83,42 @@ class Server:
         """
 
         return self._receive_clients_messages_threads is not None
+
+    def _accept_new_client_connections(self, stop_event: threading.Event) -> None:
+        """
+        Internal method to accept new client connections and store them for further processing.
+
+        This method is intended to be run in a separate thread.
+
+        :param stop_event: An event used to signal the thread to stop accepting new client connections.
+        """
+
+        # Listen for new client connections with a backlog of 5
+        self._socket.listen(self.client_connection_backlog)
+
+        while not stop_event.is_set():
+            # Get the connection
+            connection_address = self._socket.accept()
+            # Save them
+            self._new_client_requests.put(connection_address)
+
+    def listen_for_client_connections(self) -> None:
+        """
+        Starts listening for incoming client connection requests.
+
+        Does not need to be run to send messages.
+
+        If the receiving client requests thread is not already running, this method starts it in a separate thread.
+        If the receiving client requests thread is running, this method does nothing.
+        """
+
+        if self._receive_client_requests_thread is None:
+            self._receive_client_requests_thread = threading.Thread(
+                target=self._accept_new_client_connections,
+                args=(self._receive_client_requests_stop_event,),
+                name=f"NetworkLib.TCP.Server._accept_new_client_connections on port {self.port}"
+            )
+            self._receive_client_requests_thread.start()
 
     def _receive_messages_from_client(self, stop_event: threading.Event, connection: socket.socket,
                                       ip: IPv4Address) -> None:
