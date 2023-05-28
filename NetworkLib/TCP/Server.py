@@ -53,4 +53,4 @@ class Server:
         :return: True if the class instance is receiving messages, False otherwise.
         """
 
-        return self._receive_client_messages_thread.is_alive()
+        return self._receive_clients_messages_threads is not None
