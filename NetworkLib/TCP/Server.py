@@ -39,7 +39,7 @@ class Server:
         self._received_client_messages: Dict[str, queue.Queue] = {}
         """A dictionary of ip to queue storing received messages."""
         self._receive_client_messages_stop_event: threading.Event = threading.Event()
-        """An event used to signal the receive client messages thread to stop."""
+        """An event used to signal each thread handling client messages to stop."""
 
         # How long our thread should wait for messages
         self._receive_messages_timeout = receive_messages_timeout
