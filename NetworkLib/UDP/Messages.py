@@ -49,7 +49,7 @@ class Messages:
         :return: True if the class instance is receiving messages, False otherwise.
         """
 
-        return self._receive_messages_thread.is_alive()
+        return self._receive_messages_thread is not None
 
     def _receive_messages(self, stop_event: threading.Event) -> None:
         """
