@@ -22,7 +22,7 @@ class Server:
 
         # Creating and binding our socket
         self._socket: socket.socket = socket.socket()
-        """The socket object for UDP communication."""
+        """The socket object for TCP communication."""
         self._socket.bind((self.ip, self.port))
 
         # Where we receive and store each incoming client request
