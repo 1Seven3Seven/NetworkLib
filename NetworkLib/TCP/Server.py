@@ -1,6 +1,7 @@
 import queue
 import socket
 import threading
+from ipaddress import IPv4Address
 from typing import Union, Dict
 
 from NetworkLib.Utils import get_local_ip
@@ -17,7 +18,7 @@ class Server:
         self.port: int = port
         """The port number to bind the socket to."""
 
-        self.ip: str = get_local_ip() if ip is None else ip
+        self.ip: IPv4Address = get_local_ip() if ip is None else ip
         """The IP address to bind the socket to."""
 
         # Creating and binding our socket
@@ -34,10 +35,13 @@ class Server:
         """An event used to signal the receive client connection thread to stop."""
 
         # Where we receive and store our client messages
-        self._receive_client_messages_thread: Union[threading.Thread, None] = None
-        """The thread responsible for receiving and processing each connected client's incoming messages"""
-        self._received_client_messages: Dict[str, queue.Queue] = {}
-        """A dictionary of ip to queue storing received messages."""
+        self._receive_clients_messages_threads: Union[Dict[IPv4Address, threading.Thread], None] = None
+        """
+        A dictionary of IPv4 address to thread responsible for receiving and processing client's incoming messages.
+        Only exists when listening for messages.
+        """
+        self._received_client_messages: Dict[IPv4Address, queue.Queue] = {}
+        """A dictionary of IPv4 address to queue storing received messages."""
         self._receive_client_messages_stop_event: threading.Event = threading.Event()
         """An event used to signal each thread handling client messages to stop."""
 
