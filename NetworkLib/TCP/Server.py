@@ -2,7 +2,7 @@ import queue
 import socket
 import threading
 from ipaddress import IPv4Address
-from typing import Union, Dict
+from typing import Union, Dict, List, Tuple
 
 import select
 
@@ -37,7 +37,7 @@ class Server:
         # Where we receive and store each incoming client request
         self._receive_client_requests_thread: Union[threading.Thread, None] = None
         """The thread responsible for receiving and processing incoming client connection requests."""
-        self._new_client_requests: queue.Queue = queue.Queue()
+        self._new_client_requests: queue.Queue[Tuple[socket.socket, IPv4Address]] = queue.Queue()
         """A queue to store the received client requests."""
         self._receive_client_requests_stop_event: threading.Event = threading.Event()
         """An event used to signal the receive client connection thread to stop."""
