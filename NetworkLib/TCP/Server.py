@@ -239,3 +239,23 @@ class Server:
         for ip in self._received_client_messages:
             all_messages[ip] = self.get_messages_from(ip)
         return all_messages
+
+    def send_message_to(self, ip: IPv4Address, message: str) -> None:
+        """
+        Sends a message to the specified IP address.
+
+        :param ip: The IP address to send the message to.
+        :param message: The message to be sent.
+        """
+
+        self._ipv4_to_connection[ip].sendall(message.encode("UTF-8"))
+
+    def send_message_to_all(self, message) -> None:
+        """
+        Sends a message to all connected clients.
+
+        :param message: The message to be sent.
+        """
+
+        for ip in self._ipv4_to_connection:
+            self._ipv4_to_connection[ip].sendall(message.encode("UTF-8"))
