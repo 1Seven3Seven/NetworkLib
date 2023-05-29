@@ -214,3 +214,28 @@ class Server:
                 if ip not in self._receive_clients_messages_threads:
                     # Threads time
                     self._setup_listening_thread_for(ip, connection).start()
+
+    def get_messages_from(self, ip: IPv4Address) -> List[str]:
+        """
+        Retrieves the messages received from a specific client IP address.
+
+        :param ip: The IPv4 address of the client.
+        :return: A list of messages received from the specified client IP address.
+        """
+
+        messages = []
+        while not self._received_client_messages[ip].empty():
+            messages.append(self._received_client_messages[ip].get())
+        return messages
+
+    def get_all_messages(self) -> Dict[IPv4Address, List[str]]:
+        """
+        Retrieves all the messages received from all connected clients.
+
+        :return: A dictionary of client IPv4 addresses to lists of messages received from each client.
+        """
+
+        all_messages: Dict[IPv4Address, List[str]] = {}
+        for ip in self._received_client_messages:
+            all_messages[ip] = self.get_messages_from(ip)
+        return all_messages
