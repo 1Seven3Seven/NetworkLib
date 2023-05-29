@@ -162,6 +162,29 @@ class Server:
                 # Store them
                 self._received_client_messages[ip].put(message_bytes.decode("UTF-8"))
 
+    def __setup_listening_thread_for(self, ip: IPv4Address, connection: socket.socket) -> threading.Thread:
+        """
+        Set up a listening thread for a specific client connection.
+
+        This method creates a new thread responsible for receiving and processing incoming messages from a client.
+        The thread will be associated with the specified IPv4 address and the corresponding socket connection.
+
+        The returned thread needs to be started.
+
+        :param ip: The IPv4 address of the client.
+        :param connection: The socket connection for the client.
+        :return: The created thread for receiving messages from the client.
+        """
+
+        self._receive_clients_messages_threads[ip] = threading.Thread(
+            target=self._receive_messages_from_client,
+            args=(self._receive_client_messages_stop_event, connection, ip),
+            name=f"NetworkLib.TCP.Server._receive_messages_from_client for client '{ip}' on port {self.port}"
+
+        )
+
+        return self._receive_clients_messages_threads[ip]
+
     def listen_for_messages(self) -> None:
         """
         Starts listening for incoming message for each currently accepted client.
@@ -172,17 +195,22 @@ class Server:
         If there are running receiving messages threads, then this will check for new clients and begin listening.
         """
 
-        # For each currently accepted client, start a thread listening for their messages.
-        
-        # self._ipv4_to_connection: Dict[IPv4Address, socket.socket] = {}
-        # self._received_client_messages: Dict[IPv4Address, queue.Queue[str]] = {}
-        # self._receive_client_messages_stop_event: threading.Event = threading.Event()
-        # self._receive_clients_messages_threads: Union[Dict[IPv4Address, threading.Thread], None] = None
-        
         # If we are currently not listening
         if self._receive_clients_messages_threads is None:
-            # BEGIN
+            # Set up the dictionary
             self._receive_clients_messages_threads = {}
-            
-            
 
+            # For each currently accepted client, start a thread listening for their messages.
+            for ip, connection in self._ipv4_to_connection.items():
+                # Threads
+                self.__setup_listening_thread_for(ip, connection).start()
+                # BEGIN
+                self._receive_clients_messages_threads[ip].start()
+
+        else:
+            # If we are currently listening
+            # Start listening for any clients we are not listening for
+            for ip, connection in self._ipv4_to_connection.items():
+                if ip not in self._receive_clients_messages_threads:
+                    # Threads time
+                    self.__setup_listening_thread_for(ip, connection).start()
