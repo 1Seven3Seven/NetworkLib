@@ -48,7 +48,7 @@ class Server:
         A dictionary of IPv4 address to thread responsible for receiving and processing client's incoming messages.
         Only exists when listening for messages.
         """
-        self._received_client_messages: Dict[IPv4Address, queue.Queue] = {}
+        self._received_client_messages: Dict[IPv4Address, queue.Queue[str]] = {}
         """A dictionary of IPv4 address to queue storing received messages."""
         self._receive_client_messages_stop_event: threading.Event = threading.Event()
         """An event used to signal each thread handling client messages to stop."""
