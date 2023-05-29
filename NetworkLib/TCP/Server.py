@@ -48,6 +48,8 @@ class Server:
         A dictionary of IPv4 address to thread responsible for receiving and processing client's incoming messages.
         Only exists when listening for messages.
         """
+        self._ipv4_to_connection: Dict[IPv4Address, socket.socket] = {}
+        """A dictionary of IPv4 address to connection for that address."""
         self._received_client_messages: Dict[IPv4Address, queue.Queue[str]] = {}
         """A dictionary of IPv4 address to queue storing received messages."""
         self._receive_client_messages_stop_event: threading.Event = threading.Event()
@@ -119,6 +121,25 @@ class Server:
                 name=f"NetworkLib.TCP.Server._accept_new_client_connections on port {self.port}"
             )
             self._receive_client_requests_thread.start()
+
+    def get_new_client_connections(self) -> List[IPv4Address]:
+        """
+        Retrieves a list of new client connections that have been received since the last call.
+
+        :return: A list of IPv4 addresses representing the new client connections.
+        """
+
+        new_connections: List[IPv4Address] = []
+
+        while not self._new_client_requests.empty():
+            # Get the info for the new connection
+            connection, address = self._new_client_requests.get()
+            # Info to return
+            new_connections.append(address)
+            # Saving the ip to the connection
+            self._ipv4_to_connection[address] = connection
+
+        return new_connections
 
     def _receive_messages_from_client(self, stop_event: threading.Event, connection: socket.socket,
                                       ip: IPv4Address) -> None:
