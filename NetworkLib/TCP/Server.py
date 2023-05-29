@@ -55,13 +55,13 @@ class Server:
         self._receive_client_messages_stop_event: threading.Event = threading.Event()
         """An event used to signal each thread handling client messages to stop."""
 
-        self._receive_messages_timeout = receive_messages_timeout
+        self._receive_messages_timeout: float = receive_messages_timeout
         """The maximum time in seconds to wait for incoming messages."""
 
-        self.prepend_bytes_size = prepend_bytes_size
+        self.prepend_bytes_size: int = prepend_bytes_size
         """The number of bytes the message length is encoded to and prepended as"""
 
-        self.client_connection_backlog = client_connection_backlog
+        self.client_connection_backlog: int = client_connection_backlog
         """The maximum number of pending connections to the server socket."""
 
     @property
