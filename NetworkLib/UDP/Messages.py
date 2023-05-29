@@ -25,7 +25,7 @@ class Messages:
         # Creating and binding our socket
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         """The socket object for UDP communication."""
-        self._socket.bind((self.ip, self.port))
+        self._socket.bind((str(self.ip), self.port))
 
         # Where we receive and store our messages
         self._receive_messages_thread: Union[threading.Thread, None] = None
