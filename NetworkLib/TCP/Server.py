@@ -75,17 +75,6 @@ class Server:
 
         return self._receive_client_requests_thread is not None
 
-    @property
-    def receiving_messages(self) -> bool:
-        """
-        Returns a bool indicating if the class instance is receiving client messages.
-        If the `_receive_messages_thread` thread is running.
-
-        :return: True if the class instance is receiving messages, False otherwise.
-        """
-
-        return self._receive_clients_messages_threads is not None
-
     def _accept_new_client_connections(self, stop_event: threading.Event) -> None:
         """
         Internal method to accept new client connections and store them for further processing.
@@ -140,6 +129,17 @@ class Server:
             self._ipv4_to_connection[address] = connection
 
         return new_connections
+
+    @property
+    def receiving_messages(self) -> bool:
+        """
+        Returns a bool indicating if the class instance is receiving client messages.
+        If the `_receive_messages_thread` thread is running.
+
+        :return: True if the class instance is receiving messages, False otherwise.
+        """
+
+        return self._receive_clients_messages_threads is not None
 
     def _receive_messages_from_client(self, stop_event: threading.Event, connection: socket.socket,
                                       ip: IPv4Address) -> None:
