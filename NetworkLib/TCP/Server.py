@@ -162,7 +162,7 @@ class Server:
                 # Store them
                 self._received_client_messages[ip].put(message_bytes.decode("UTF-8"))
 
-    def __setup_listening_thread_for(self, ip: IPv4Address, connection: socket.socket) -> threading.Thread:
+    def _setup_listening_thread_for(self, ip: IPv4Address, connection: socket.socket) -> threading.Thread:
         """
         Set up a listening thread for a specific client connection.
 
@@ -203,7 +203,7 @@ class Server:
             # For each currently accepted client, start a thread listening for their messages.
             for ip, connection in self._ipv4_to_connection.items():
                 # Threads
-                self.__setup_listening_thread_for(ip, connection).start()
+                self._setup_listening_thread_for(ip, connection).start()
                 # BEGIN
                 self._receive_clients_messages_threads[ip].start()
 
@@ -213,4 +213,4 @@ class Server:
             for ip, connection in self._ipv4_to_connection.items():
                 if ip not in self._receive_clients_messages_threads:
                     # Threads time
-                    self.__setup_listening_thread_for(ip, connection).start()
+                    self._setup_listening_thread_for(ip, connection).start()
