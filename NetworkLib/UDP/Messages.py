@@ -117,7 +117,8 @@ class Messages:
             message.encode("utf-8"),
             (
                 ip,
-                self.port if port is None else port)
+                self.port if port is None else port
+            )
         )
 
     def stop_listening_for_messages(self) -> None:
