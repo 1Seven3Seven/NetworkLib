@@ -258,4 +258,5 @@ class Server:
         """
 
         for ip in self._ipv4_to_connection:
-            self._ipv4_to_connection[ip].sendall(message.encode("UTF-8"))
+            self.send_message_to(ip, message)
+
