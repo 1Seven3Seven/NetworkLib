@@ -10,7 +10,7 @@ from NetworkLib.Utils import get_local_ip
 
 
 class Server:
-    def __init__(self, port: int = 1024, ip: str = None, connection_accept_timeout: float = 1,
+    def __init__(self, port: int = 1024, ip: IPv4Address = None, connection_accept_timeout: float = 1,
                  receive_messages_timeout: float = 0.1, prepend_bytes_size: int = 4,
                  client_connection_backlog: int = 5):
         """
