@@ -103,6 +103,9 @@ class Server:
         If the receiving client requests thread is running, this method does nothing.
         """
 
+        # Make sure we are running
+        self._receive_client_messages_stop_event.clear()
+
         if self._receive_client_requests_thread is None:
             self._receive_client_requests_thread = threading.Thread(
                 target=self._accept_new_client_connections,
@@ -194,6 +197,9 @@ class Server:
         If the receiving messages threads are not already running, this method starts them.
         If there are running receiving messages threads, then this will check for new clients and begin listening.
         """
+
+        # Make sure we are running
+        self._receive_client_messages_stop_event.clear()
 
         # If we are currently not listening
         if self._receive_clients_messages_threads is None:
