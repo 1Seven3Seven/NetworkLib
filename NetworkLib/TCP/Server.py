@@ -133,6 +133,20 @@ class Server:
 
         return new_connections
 
+    def stop_listening_for_client_connections(self) -> None:
+        """
+        Stops listening for incoming client connection requests.
+
+        Blocks until either the current incoming connection request has finished processing or until the timeout has
+        been reached.
+
+        `listen_for_client_connections` needs to be run again to start listening again.
+        """
+
+        if self._receive_client_requests_thread is not None:
+            self._receive_client_requests_stop_event.set()
+            self._receive_client_requests_thread.join()
+
     @property
     def receiving_messages(self) -> bool:
         """
