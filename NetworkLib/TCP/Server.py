@@ -260,3 +260,21 @@ class Server:
         for ip in self._ipv4_to_connection:
             self.send_message_to(ip, message)
 
+    def stop_listening_for_messages(self) -> None:
+        """
+        Stops listening for incoming messages.
+
+        Blocks until all incoming messages have been processed.
+
+        `listen_for_messages` needs to be run again to start listening again.
+        """
+
+        # If the threads exist
+        if self._receive_clients_messages_threads is not None:
+            # HALT IN THE NAME OF THE LAW
+            self._receive_client_messages_stop_event.set()
+            # Make sure all have finished
+            for _, thread in self._receive_clients_messages_threads.items():
+                thread.join()
+            # Remove the dict as the threads have all stopped
+            self._receive_clients_messages_threads = None
