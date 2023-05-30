@@ -10,11 +10,13 @@ from NetworkLib.Utils import get_local_ip
 
 
 class Server:
-    def __init__(self, port: int = 1024, ip: str = None, receive_messages_timeout: float = 0.1,
-                 prepend_bytes_size: int = 4, client_connection_backlog: int = 5):
+    def __init__(self, port: int = 1024, ip: str = None, connection_accept_timeout: float = 1,
+                 receive_messages_timeout: float = 0.1, prepend_bytes_size: int = 4,
+                 client_connection_backlog: int = 5):
         """
         :param port: The port number to bind the socket to.
         :param ip: The IP address to bind the socket to. If not provided, the local IP address is used.
+        :param connection_accept_timeout: The maximum time in seconds to wait for incoming client connection requests.
         :param receive_messages_timeout: The maximum time in seconds to wait for incoming messages.
         :param prepend_bytes_size: The number of bytes used to prepend the message length when preparing the message.
         This value determines the maximum message length that can be handled.
@@ -55,6 +57,9 @@ class Server:
         self._receive_client_messages_stop_event: threading.Event = threading.Event()
         """An event used to signal each thread handling client messages to stop."""
 
+        self.connection_accept_timeout: float = connection_accept_timeout
+        """The maximum time in seconds to wait for incoming client connection requests."""
+
         self._receive_messages_timeout: float = receive_messages_timeout
         """The maximum time in seconds to wait for incoming messages."""
 
@@ -88,10 +93,13 @@ class Server:
         self._socket.listen(self.client_connection_backlog)
 
         while not stop_event.is_set():
-            # Get the connection
-            connection_address = self._socket.accept()
-            # Save them
-            self._new_client_requests.put(connection_address)
+            # Check if there is a connection to accept
+            readable, _, _ = select.select([self._socket], [], [], self.connection_accept_timeout)
+            if readable:
+                # Get the connection
+                connection_address = self._socket.accept()
+                # Save them
+                self._new_client_requests.put(connection_address)
 
     def listen_for_client_connections(self) -> None:
         """
