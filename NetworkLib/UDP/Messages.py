@@ -67,7 +67,7 @@ class Messages:
             if len(readable) > 0:  # If there is a message
                 # Get the message, decode it, store it
                 message_bytes, address = self._socket.recvfrom(self.port)
-                message = message_bytes.decode("utf-8")
+                message = message_bytes.decode("UTF-8")
                 self._received_messages.put((message, address))
 
     def listen_for_messages(self) -> None:
